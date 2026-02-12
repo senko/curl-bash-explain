@@ -1,6 +1,7 @@
 import logging
 
 import markdown
+import nh3
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 
@@ -49,8 +50,26 @@ def results(request, script_hash):
             "error": "Analysis not found. It may have been replaced by a newer version.",
         })
 
-    explanation_html = markdown.markdown(
+    raw_html = markdown.markdown(
         entry.explanation_md, extensions=["fenced_code", "tables"]
+    )
+    explanation_html = nh3.clean(
+        raw_html,
+        tags={
+            "h1", "h2", "h3", "h4", "h5", "h6",
+            "p", "br", "hr",
+            "ul", "ol", "li",
+            "strong", "em", "b", "i", "code", "pre",
+            "blockquote",
+            "table", "thead", "tbody", "tr", "th", "td",
+            "a", "span", "div",
+        },
+        attributes={
+            "a": {"href", "title"},
+            "th": {"align"},
+            "td": {"align"},
+        },
+        url_schemes={"http", "https"},
     )
 
     return render(request, "analyzer/results.html", {

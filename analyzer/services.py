@@ -1,7 +1,10 @@
 """Core logic: parse input, download scripts, call LLM."""
 
+import ipaddress
 import re
 import logging
+import socket
+from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -14,6 +17,28 @@ logger = logging.getLogger(__name__)
 
 DOWNLOAD_TIMEOUT = 30
 MAX_SCRIPT_SIZE = 512 * 1024  # 512 KB
+MAX_REDIRECTS = 5
+
+
+def _validate_url(url: str) -> None:
+    """Block requests to private/internal IP ranges (SSRF protection)."""
+    parsed = urlparse(url)
+    hostname = parsed.hostname
+    if not hostname:
+        raise AnalysisError(f"Invalid URL: {url}")
+
+    # Resolve hostname to IP(s) and check each one
+    try:
+        addrinfos = socket.getaddrinfo(hostname, parsed.port or 80)
+    except socket.gaierror:
+        raise AnalysisError(f"Could not resolve hostname: {hostname}")
+
+    for family, _, _, _, sockaddr in addrinfos:
+        ip = ipaddress.ip_address(sockaddr[0])
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            raise AnalysisError(
+                f"Requests to private/internal addresses are not allowed: {hostname}"
+            )
 
 # Patterns for extracting URLs from curl/wget pipe-to-bash commands
 CURL_PIPE_RE = re.compile(
@@ -59,13 +84,31 @@ def parse_input(raw: str) -> str:
     )
 
 
+def _safe_get(url: str, **kwargs) -> requests.Response:
+    """Fetch a URL with SSRF protection and limited redirects."""
+    _validate_url(url)
+    kwargs.setdefault("timeout", DOWNLOAD_TIMEOUT)
+    kwargs.setdefault("headers", {"User-Agent": "Mozilla/5.0 (compatible; curlbash-explain/1.0)"})
+    kwargs["allow_redirects"] = False
+
+    for _ in range(MAX_REDIRECTS):
+        resp = requests.get(url, **kwargs)
+        if resp.is_redirect or resp.is_permanent_redirect:
+            url = resp.headers.get("Location", "")
+            if not url:
+                raise AnalysisError("Redirect with no Location header.")
+            _validate_url(url)  # validate each redirect target
+            continue
+        resp.raise_for_status()
+        return resp
+
+    raise AnalysisError("Too many redirects.")
+
+
 def _scrape_for_installer(page_url: str) -> str:
     """Scrape a webpage and look for curl|bash style commands."""
     try:
-        resp = requests.get(page_url, timeout=DOWNLOAD_TIMEOUT, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; curlbash-explain/1.0)"
-        })
-        resp.raise_for_status()
+        resp = _safe_get(page_url)
     except requests.RequestException as exc:
         raise AnalysisError(f"Failed to fetch page {page_url}: {exc}")
 
@@ -104,10 +147,7 @@ def _scrape_for_installer(page_url: str) -> str:
 def download_script(url: str) -> str:
     """Download the shell script without executing it."""
     try:
-        resp = requests.get(url, timeout=DOWNLOAD_TIMEOUT, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; curlbash-explain/1.0)"
-        })
-        resp.raise_for_status()
+        resp = _safe_get(url)
     except requests.RequestException as exc:
         raise AnalysisError(f"Failed to download script from {url}: {exc}")
 
