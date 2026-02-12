@@ -1,0 +1,87 @@
+{% extends "analyzer/base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-slate-100 mb-4">
+            Know what you're piping into
+            <span class="text-amber-400 font-mono">bash</span>
+        </h1>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+            Paste a <code class="bg-slate-800 px-2 py-0.5 rounded text-sm text-emerald-400">curl&nbsp;|&nbsp;bash</code>
+            command or a website URL, and we'll analyze it and explain exactly what it does.
+        </p>
+    </div>
+
+    {% if error %}
+    <div class="mb-8 bg-red-950/50 border border-red-800 rounded-lg px-5 py-4 text-red-300">
+        <p class="font-semibold text-red-200 mb-1">⚠ Something went wrong</p>
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+
+    <form method="post" action="/analyze" class="space-y-4">
+        {% csrf_token %}
+        <div class="relative">
+            <input
+                type="text"
+                name="input"
+                value="{{ input_value|default:'' }}"
+                placeholder="curl -fsSL https://example.com/install.sh | bash"
+                autofocus
+                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-4 text-lg
+                       text-slate-100 placeholder-slate-600 font-mono
+                       focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent
+                       transition-all"
+            >
+        </div>
+        <div class="text-center">
+            <button
+                type="submit"
+                id="submit-btn"
+                class="bg-sky-600 hover:bg-sky-500 text-white font-semibold px-8 py-3 rounded-xl
+                       text-lg transition-colors focus:outline-none focus:ring-2 focus:ring-sky-400
+                       focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <span id="btn-label">Explain this script</span>
+                <span id="btn-spinner" class="hidden items-center gap-2">
+                    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    Analyzing…
+                </span>
+            </button>
+        </div>
+    </form>
+
+    <script>
+    document.querySelector('form').addEventListener('submit', function() {
+        var btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        document.getElementById('btn-label').classList.add('hidden');
+        var sp = document.getElementById('btn-spinner');
+        sp.classList.remove('hidden');
+        sp.classList.add('inline-flex');
+    });
+    </script>
+
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+        <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+            <div class="text-2xl mb-2">🔍</div>
+            <h3 class="font-semibold text-slate-200 mb-1">Paste &amp; Analyze</h3>
+            <p class="text-slate-400">Paste a curl|bash command or a project URL. We'll find and download the installer script.</p>
+        </div>
+        <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+            <div class="text-2xl mb-2">🤖</div>
+            <h3 class="font-semibold text-slate-200 mb-1">AI-Powered</h3>
+            <p class="text-slate-400">An LLM reads every line and explains what the script does, what it installs, and potential risks.</p>
+        </div>
+        <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-5">
+            <div class="text-2xl mb-2">🛡️</div>
+            <h3 class="font-semibold text-slate-200 mb-1">Safety First</h3>
+            <p class="text-slate-400">Scripts are downloaded and analyzed without ever being executed. Nothing runs on your machine or ours.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+[project]
+name = "curlbash"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "dj-database-url>=3.1.0",
+    "django>=6.0.2",
+    "gunicorn>=25.0.3",
+    "markdown>=3.10.2",
+    "openai>=2.20.0",
+    "python-dotenv>=1.2.1",
+    "requests>=2.32.5",
+]

@@ -1,0 +1,15 @@
+[Unit]
+Description=curl | bash > explain
+After=network.target
+
+[Service]
+Type=simple
+User=exedev
+Group=exedev
+WorkingDirectory=/home/exedev/curlbash
+ExecStart=/home/exedev/curlbash/.venv/bin/gunicorn curlbash_project.wsgi:application --bind 0.0.0.0:8000 --workers 8 --timeout 120
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

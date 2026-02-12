@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}curl | bash &gt; explain{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js" defer></script>
+    <style>
+        /* Prism overrides */
+        pre[class*="language-"], code[class*="language-"] { background: none !important; text-shadow: none !important; }
+        /* Markdown prose styling */
+        .prose h1 { font-size: 1.5rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #f8fafc; }
+        .prose h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #e2e8f0; }
+        .prose h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; color: #cbd5e1; }
+        .prose p { margin-bottom: 0.75rem; line-height: 1.7; }
+        .prose ul, .prose ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+        .prose ul { list-style-type: disc; }
+        .prose ol { list-style-type: decimal; }
+        .prose li { margin-bottom: 0.25rem; line-height: 1.6; }
+        .prose code { background: #1e293b; color: #e2e8f0; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre { background: #0f172a; border: 1px solid #1e293b; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose pre code { background: none; padding: 0; font-size: 0.8rem; }
+        .prose strong { color: #f1f5f9; font-weight: 600; }
+        .prose a { color: #60a5fa; text-decoration: underline; }
+        .prose blockquote { border-left: 3px solid #475569; padding-left: 1rem; color: #94a3b8; margin-bottom: 0.75rem; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #334155; padding: 0.5rem 0.75rem; text-align: left; }
+        .prose th { background: #1e293b; font-weight: 600; }
+    </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-300">
+    <div class="min-h-full flex flex-col">
+        <header class="border-b border-slate-800">
+            <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+                <a href="/" class="text-xl font-bold text-slate-100 hover:text-white transition-colors">
+                    <span class="text-emerald-400 font-mono">curl</span>
+                    <span class="text-slate-500 font-mono"> | </span>
+                    <span class="text-amber-400 font-mono">bash</span>
+                    <span class="text-slate-500 font-mono"> &gt; </span>
+                    <span class="text-sky-400 font-mono">explain</span>
+                </a>
+                <a href="https://github.com/senko/curl-bash-explain" target="_blank" rel="noopener" class="text-slate-500 hover:text-white transition-colors" title="View on GitHub">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+            </div>
+        </header>
+
+        <main class="flex-1">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="border-t border-slate-800 mt-auto">
+            <div class="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-slate-500">
+                Created by <a href="https://senko.net" class="text-slate-400 hover:text-white transition-colors">Senko</a> in Croatia. Assembled by <a href="https://claude.ai" class="text-slate-400 hover:text-white transition-colors">Claude</a>. Analysis by <a href="https://chatgpt.com" class="text-slate-400 hover:text-white transition-colors">ChatGPT</a>. Powered by <a href="https://exe.dev" class="text-slate-400 hover:text-white transition-colors">exe.dev</a>.
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

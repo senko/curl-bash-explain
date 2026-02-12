@@ -1,0 +1,42 @@
+{% extends "analyzer/base.html" %}
+
+{% block title %}Analysis — curl | bash &gt; explain{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-10">
+    <!-- Back -->
+    <div class="mb-8">
+        <a href="/" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors">
+            &larr; New analysis
+        </a>
+    </div>
+
+    <!-- Meta info -->
+    <div class="mb-6 flex flex-wrap items-center gap-3 text-sm">
+        <span class="bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-mono text-xs truncate max-w-xl">
+            {{ result.script_url }}
+        </span>
+    </div>
+
+    <!-- Explanation -->
+    <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-8 prose text-slate-300">
+        {{ result.explanation_html|safe }}
+    </div>
+
+    <!-- Collapsible raw script -->
+    <details class="mt-6 bg-slate-900/50 border border-slate-800 rounded-xl">
+        <summary class="px-5 py-3 cursor-pointer text-sm font-semibold text-slate-400 hover:text-slate-200 transition-colors">
+            View raw script
+        </summary>
+        <div class="px-5 pb-4">
+            <pre class="bg-slate-950 border border-slate-800 rounded-lg p-4 overflow-x-auto text-xs max-h-96 !m-0"><code class="language-bash">{{ result.script_content }}</code></pre>
+        </div>
+    </details>
+
+    <script>
+    document.querySelector('details').addEventListener('toggle', function() {
+        if (this.open && window.Prism) Prism.highlightAllUnder(this);
+    });
+    </script>
+</div>
+{% endblock %}
