@@ -27,7 +27,7 @@
                 type="text"
                 name="input"
                 value="{{ input_value|default:'' }}"
-                placeholder="curl -fsSL https://example.com/install.sh | bash"
+                placeholder="curl -fsSL https://openclaw.ai/install.sh | bash"
                 autofocus
                 class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-4 text-lg
                        text-slate-100 placeholder-slate-600 font-mono
@@ -52,6 +52,17 @@
                     Analyzing…
                 </span>
             </button>
+        </div>
+        <div class="flex items-center justify-center gap-3 text-sm text-slate-500">
+            <span>Examples:</span>
+            <a href="/results/1c9db64f27d7487ecf74fe3543b96beb1f78039cc92745c3e825a9a7ccefec80"
+               class="inline-flex items-center gap-1.5 bg-slate-800/70 hover:bg-slate-700/70 border border-slate-700 hover:border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
+                🍺 Homebrew
+            </a>
+            <a href="/results/bfd18e9064fb1e2ddda074cb5819ed58d96a71b3a4c321197a90943236daadd7"
+               class="inline-flex items-center gap-1.5 bg-slate-800/70 hover:bg-slate-700/70 border border-slate-700 hover:border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
+                🤖 Claude Code
+            </a>
         </div>
     </form>
 
